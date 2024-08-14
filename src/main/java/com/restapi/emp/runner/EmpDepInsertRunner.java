@@ -15,11 +15,17 @@ import java.util.List;
 @Component
 @Profile("prod")   //InsertRunner 가 동장하지 않도록 하려면 현재 profile 과 다른 값을 주면 됨
 public class EmpDepInsertRunner implements ApplicationRunner {
-    @Autowired
-    DepartmentRepository departmentRepository;
+    //@Autowired
+    final DepartmentRepository departmentRepository;
 
-    @Autowired
-    EmployeeRepository employeeRepository;
+    //@Autowired
+    final EmployeeRepository employeeRepository;
+
+    // Autowired 를 쓰지 않고 construct injection 생성자를 만들어서 내가 의존하는 객체를 인자로 받아서 레퍼런스를 초기화하는 방법
+    public EmpDepInsertRunner(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository) {
+        this.departmentRepository = departmentRepository;
+        this.employeeRepository = employeeRepository;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
