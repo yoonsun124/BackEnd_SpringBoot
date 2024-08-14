@@ -4,6 +4,7 @@ import com.restapi.emp.entity.Department;
 import com.restapi.emp.entity.Employee;
 import com.restapi.emp.repository.DepartmentRepository;
 import com.restapi.emp.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@Profile("prod")   //InsertRunner 가 동장하지 않도록 하려면 현재 profile 과 다른 값을 주면 됨
+@Profile("prod")   //InsertRunner 가 동작하지 않도록 하려면 현재 profile 과 다른 값을 주면 됨
+@RequiredArgsConstructor  // lombok 이 생성자를 만들어줌
 public class EmpDepInsertRunner implements ApplicationRunner {
     //@Autowired
     final DepartmentRepository departmentRepository;
@@ -21,11 +23,11 @@ public class EmpDepInsertRunner implements ApplicationRunner {
     //@Autowired
     final EmployeeRepository employeeRepository;
 
-    // Autowired 를 쓰지 않고 construct injection 생성자를 만들어서 내가 의존하는 객체를 인자로 받아서 레퍼런스를 초기화하는 방법
-    public EmpDepInsertRunner(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository) {
-        this.departmentRepository = departmentRepository;
-        this.employeeRepository = employeeRepository;
-    }
+    // construct injection 생성자 주입 / 의존하는 객체를 인자로 받아서 레퍼런스를 초기화하는 방법
+//    public EmpDepInsertRunner(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository) {
+//        this.departmentRepository = departmentRepository;
+//        this.employeeRepository = employeeRepository;
+//    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
