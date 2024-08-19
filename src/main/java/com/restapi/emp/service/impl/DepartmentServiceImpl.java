@@ -10,11 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
 
@@ -32,6 +34,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return DepartmentMapper.mapToDepartmentDto(savedDepartment);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public DepartmentDto getDepartmentById(Long departmentId) {
 
@@ -41,46 +44,48 @@ public class DepartmentServiceImpl implements DepartmentService {
 //        Department department = optional.orElseThrow(
 //                () -> new ResourceNotFoundException("Department is not exists with a given id: " + departmentId));
 
-        String errMsg = String.format("Department is not exists with a given id: %s", departmentId);
-        Department department = departmentRepository.findById(departmentId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(errMsg, HttpStatus.NOT_FOUND)
-        );
+        Department department = getDepartment(departmentId);
         return DepartmentMapper.mapToDepartmentDto(department);
     }
 
+    private Department getDepartment(Long departmentId) {
+        String errMsg = String.format("Department is not exists with a given id: %s", departmentId);
+        return departmentRepository.findById(departmentId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(errMsg, HttpStatus.NOT_FOUND)
+        );
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public List<DepartmentDto> getAllDepartments() {
+        // List<Department> ==> List<DepartmentDto>
         List<Department> departments = departmentRepository.findAll();
-        return departments.stream()
+        return departments
+                .stream()
                 .map(DepartmentMapper::mapToDepartmentDto)
-                .toList();
+                .toList();  // Stream<DepartmentDto> => List<DepartmentDto>
                 //.map((department) -> DepartmentMapper.mapToDepartmentDto(department))
                 //.collect(Collectors.toList());
     }
 
     @Override
     public DepartmentDto updateDepartment(Long departmentId, DepartmentDto updatedDepartment) {
-        Department department = departmentRepository.findById(departmentId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Department is not exists with a given id:"+ departmentId)
-        );
+        Department department = getDepartment(departmentId);
 
+        // Dirty check - setter method 만 호출 (@Transactional 사용)
         department.setDepartmentName(updatedDepartment.getDepartmentName());
         department.setDepartmentDescription(updatedDepartment.getDepartmentDescription());
 
-        Department savedDepartment = departmentRepository.save(department);
+         //Department savedDepartment = departmentRepository.save(department);
 
-        return DepartmentMapper.mapToDepartmentDto(savedDepartment);
+        return DepartmentMapper.mapToDepartmentDto(department);
     }
 
     @Override
     public void deleteDepartment(Long departmentId) {
-        departmentRepository.findById(departmentId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Department is not exists with a given id: " + departmentId)
-        );
+        Department department = getDepartment(departmentId);
 
-        departmentRepository.deleteById(departmentId);
+        departmentRepository.delete(department);
     }
 }
