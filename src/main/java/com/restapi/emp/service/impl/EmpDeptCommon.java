@@ -23,4 +23,5 @@ public class EmpDeptCommon {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(errMsg, HttpStatus.NOT_FOUND));
     }
+
 }
