@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@Profile("prod")   //InsertRunner 가 동작하지 않도록 하려면 현재 profile 과 다른 값을 주면 됨
+@Profile("local")   //InsertRunner 가 동작하지 않도록 하려면 현재 profile 과 다른 값을 주면 됨
 @RequiredArgsConstructor  // lombok 이 생성자를 만들어줌
 public class EmpDepInsertRunner implements ApplicationRunner {
     //@Autowired
