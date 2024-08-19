@@ -74,8 +74,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = getDepartment(departmentId);
 
         // Dirty check - setter method 만 호출 (@Transactional 사용)
-        department.setDepartmentName(updatedDepartment.getDepartmentName());
-        department.setDepartmentDescription(updatedDepartment.getDepartmentDescription());
+        // 조건을 통한 부분 수정 체크
+        if(updatedDepartment.getDepartmentName() != null)
+            department.setDepartmentName(updatedDepartment.getDepartmentName());
+        if(updatedDepartment.getDepartmentDescription() != null)
+            department.setDepartmentDescription(updatedDepartment.getDepartmentDescription());
 
          //Department savedDepartment = departmentRepository.save(department);
 
