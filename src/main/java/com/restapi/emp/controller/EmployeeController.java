@@ -20,14 +20,15 @@ public class EmployeeController {
 
     // Build Add Employee REST API
     @PostMapping
-    public ResponseEntity<?> createEmployee(@RequestBody @Valid EmployeeDto employeeDto
-    , Errors errors){
+    public ResponseEntity<?> createEmployee(@RequestBody @Valid EmployeeDto employeeDto){
+//    , Errors errors){
 
-        if(errors.hasErrors()){
-            // 400 Bad Request
-            // build 일 때는 body 가 없어서 메세지가 뜨지 않음, 하지만 body(errors)로 하면 500 에러가 뜸
-            return ResponseEntity.badRequest().body(errors);
-        }
+        // 이를 해결하기 위해 pom.xml 에 properties 및 의존성 추가하여 EmployeeDto 의 오류 메세지가 뜨게 함
+//        if(errors.hasErrors()){
+//            // 400 Bad Request
+//            // build 일 때는 body 가 없어서 메세지가 뜨지 않음, 하지만 body(errors)로 하면 500 에러가 뜸
+//            return ResponseEntity.badRequest().body(errors);
+//        }
 
         EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
